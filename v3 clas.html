@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Class XI F1 OFC</title>
+    <!-- Google Font Premium -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- RESET & BASE STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #2d3748;
+            overflow-x: hidden;
+        }
+
+        /* Saat loading aktif, scroll dikunci */
+        body.loading-active {
+            overflow: hidden;
+        }
+
+        /* --- SCREEN LOADING SCREEN (5 DETIK) --- */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #f8f9fa;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
+        }
+
+        .loading-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Spinner Premium Emas */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(183, 121, 31, 0.15);
+            border-top-color: #b7791f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1a202c;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* --- NAVBAR & HAMBURGER --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 16px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 100%;
+            height: 2px;
+            background: #1a202c;
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.active span:nth-child(2) { opacity: 0; transform: translateX(-10px); }
+        .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .logo {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a202c;
+            letter-spacing: 0.5px;
+            user-select: none;
+        }
+
+        /* --- SIDEBAR MENU --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 260px;
+            height: 100%;
+            background: #ffffff;
+            z-index: 999;
+            padding-top: 90px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.03);
+        }
+
+        .sidebar.active { left: 0; }
+        .sidebar ul { list-style: none; }
+        .sidebar ul li a {
+            color: #4a5568;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 15px 30px;
+            display: block;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sidebar ul li a:hover {
+            color: #b7791f;
+            background: #f7fafc;
+            padding-left: 35px;
+        }
+
+        /* Pembatas Menu Khusus */
+        .sidebar .menu-divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 10px 30px;
+        }
+
+        /* --- LAYOUT & ANIMASI --- */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 110px 0 50px 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 35px;
+            height: 3px;
+            background: #b7791f;
+            border-radius: 2px;
+        }
+
+        /* --- HOME SECTION --- */
+        #home .card {
+            padding: 50px 35px;
+            background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+        }
+
+        #home h1 {
+            font-size: 2.5rem;
+            color: #1a202c;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        #home h1 span { color: #b7791f; }
+        #home p { color: #718096; font-size: 1.05rem; line-height: 1.6; }
+
+        /* SOSIAL MEDIA WRAPPER */
+        .social-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #4a5568;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .social-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            transition: transform 0.3s ease;
+        }
+
+        .social-btn:hover {
+            color: #b7791f;
+            background: #ffffff;
+            border-color: rgba(183, 121, 31, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(183, 121, 31, 0.08);
+        }
+
+        .social-btn:hover svg {
+            transform: scale(1.1);
+        }
+
+        /* --- BAGAN STRUKTUR ORGANISASI --- */
+        .chart-container {
+            width: 100%;
+            overflow-x: auto;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .bagan-pohon {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 650px;
+            margin: 0 auto;
+        }
+
+        .member-card {
+            background: #ffffff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #edf2f7;
+            display: inline-block;
+            min-width: 160px;
+            z-index: 2;
+        }
+
+        .member-card .role {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #b7791f;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+
+        .member-card .name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .line-v {
+            width: 2px;
+            height: 25px;
+            background: #cbd5e0;
+            position: relative;
+        }
+
+        .cabang-row {
+            display: flex;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+        }
+
+        .cabang-row::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 16.5%;
+            width: 67%;
+            height: 2px;
+            background: #cbd5e0;
+        }
+
+        .cabang-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        /* --- GALERI FOTO (HORIZONTAL SCROLL) --- */
+        .galeri-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 30px 0;
+            -webkit-overflow-scrolling: touch;
+            cursor: grab;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+        }
+
+        .galeri-wrapper:active { cursor: grabbing; }
+        .galeri-wrapper::-webkit-scrollbar { display: none; }
+
+        .galeri-grid {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 25px;
+            padding: 0 24px;
+        }
+
+        .galeri-item {
+            flex: 0 0 auto;
+            width: 280px;
+            perspective: 1000px;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            scroll-snap-align: center;
+        }
+
+        .foto-box {
+            position: relative;
+            border-radius: 32px;
+            overflow: hidden;
+            height: 360px;
+            background: rgba(237, 242, 247, 0.8);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            pointer-events: none;
+            transform: scale(0.9); 
+            filter: blur(2px);
+            opacity: 0.6;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                        filter 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .galeri-item.is-active .foto-box {
+            transform: scale(1.1);
+            filter: blur(0px);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .foto-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .foto-box .caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 25px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: #ffffff;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* --- PENGHARGAAN --- */
+        .stats-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .stat-box {
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat-box h3 { font-size: 2.2rem; color: #b7791f; font-weight: 700; margin-bottom: 2px; }
+        .stat-box p { font-size: 0.85rem; color: #718096; font-weight: 500; }
+
+        .awards-list { display: flex; flex-direction: column; gap: 12px; }
+        
+        .award-card {
+            padding: 16px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .award-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(183, 121, 31, 0.3);
+            box-shadow: 0 6px 20px rgba(183, 121, 31, 0.06);
+        }
+
+        .award-title { font-size: 0.95rem; color: #2d3748; font-weight: 500; }
+        .award-year { font-size: 0.9rem; font-weight: 600; color: #b7791f; }
+
+        /* --- MODAL POP-UP (GLASSMORPHISM) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 24px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1a202c;
+            line-height: 1.3;
+            max-width: 90%;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #a0aec0;
+            transition: color 0.2s;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .close-modal:hover { color: #1a202c; }
+
+        .modal-info-item {
+            margin-bottom: 15px;
+        }
+
+        .modal-info-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #b7791f;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .modal-info-value {
+            font-size: 0.95rem;
+            color: #2d3748;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        /* --- HALAMAN TERSEMBUNYI (TENTANG WEB) --- */
+        .hidden-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #f8f9fa;
+            z-index: 1500;
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 90px 24px 50px 24px;
+        }
+
+        .hidden-page.active {
+            transform: translateX(0);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            color: #b7791f;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: transform 0.2s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-3px);
+        }
+
+        .copy-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #edf2f7;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-top: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .url-text {
+            font-size: 0.85rem;
+            color: #4a5568;
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 75%;
+        }
+
+        .copy-btn {
+            background: #b7791f;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover { background: #975a16; }
+
+        /* GIMIK STORAGE BAR STYLE IOS */
+        .storage-container {
+            margin-top: 25px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(0,0,0,0.03);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+        }
+
+        .storage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .storage-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #2d3748;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .storage-desc {
+            font-size: 0.85rem;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .storage-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .storage-bar-fill {
+            width: 66.67%;
+            height: 100%;
+            background: linear-gradient(90deg, #b7791f, #d69e2e);
+            border-radius: 4px;
+        }
+
+        /* --- RESPONSIVE MEDIA --- */
+        @media (max-width: 600px) {
+            #home h1 { font-size: 2rem; }
+            section { padding-top: 90px; }
+            .social-container { gap: 8px; }
+            .social-btn { font-size: 0.85rem; padding: 8px 14px; }
+            .galeri-item { width: 240px; }
+            .foto-box { height: 300px; }
+        }
+    </style>
+</head>
+<body class="loading-active">
+
+    <!-- ANIMASI LOADING SCREEN -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="spinner"></div>
+        <div class="loading-text">Menyiapkan Halaman...</div>
+    </div>
+
+    <!-- NAVBAR -->
+    <header>
+        <button class="hamburger" id="hamBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="logo">CLASS F3</div>
+        <div style="width: 24px;"></div>
+    </header>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar" id="sideNav">
+        <ul>
+            <li><a href="#home" onclick="closeMenu()">Beranda</a></li>
+            <li><a href="#struktur" onclick="closeMenu()">Struktur</a></li>
+            <li><a href="#galeri" onclick="closeMenu()">Galeri Foto</a></li>
+            <li><a href="#penghargaan" onclick="closeMenu()">Penghargaan</a></li>
+            <div class="menu-divider"></div>
+            <!-- Tombol rahasia di bawah menu penghargaan -->
+            <li><a onclick="openSecretPage()" style="color: #b7791f; font-weight: 600;">Tentang Web</a></li>
+        </ul>
+    </nav>
+
+    <!-- CONTENT -->
+    <div class="container">
+
+        <!-- HOME -->
+        <section id="home">
+            <div class="card reveal">
+                <h1>Hello, Apa kabar? <br><span>Selamat datang di kelas XI fase 3</span></h1>
+                <p style="margin-top: 15px;">Ruang interaksi digital kelas yang minimalis, tempat berbagi dokumentasi, memantau struktur kepengurusan, dan mencatat jejak prestasi bersama.</p>
+                
+                <div class="social-container">
+                    <a href="https://www.instagram.com/USERNAME_AKUN_KELAS" target="_blank" class="social-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                        </svg>
+                        <span>Instagram</span>
+                    </a>
+                    
+                    <a href="https://www.tiktok.com/@USERNAME_AKUN_KELAS" target="_blank" class="social-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.03 1.61 4.2 1.13 1.21 2.69 1.93 4.32 2.12v3.91c-1.37-.17-2.68-.74-3.75-1.62-.74-.63-1.33-1.42-1.74-2.31v7.64c0 1.95-.51 3.84-1.5 5.41-1.48 2.21-4.01 3.59-6.68 3.59-1.8 0-3.57-.52-5.1-1.5-2.27-1.52-3.61-4.14-3.51-6.88.13-2.97 1.91-5.63 4.67-6.75.99-.41 2.06-.61 3.14-.59v3.93c-.76-.08-1.54.11-2.2.51-.97.58-1.54 1.68-1.49 2.81.06 1.34 1.01 2.5 2.33 2.78.36.07.73.09 1.1.06 1.19-.1 2.23-.97 2.51-2.14.07-.31.1-.63.1-.95V.02z"/>
+                        </svg>
+                        <span>TikTok</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- STRUKTUR -->
+        <section id="struktur">
+            <div class="reveal">
+                <h2>Struktur Organisasi</h2>
+                <div class="card chart-container">
+                    <div class="bagan-pohon">
+                        <div class="member-card">
+                            <div class="role">Wali Kelas</div>
+                            <div class="name">Bu Rini, S.Pd</div>
+                        </div>
+                        <div class="line-v"></div>
+                        <div class="member-card">
+                            <div class="role">Ketua Kelas</div>
+                            <div class="name">Adam dermawan</div>
+                        </div>
+                        <div class="line-v" style="height: 20px;"></div>
+                        <div class="cabang-row">
+                            <div class="cabang-item">
+                                <div class="line-v" style="height: 20px;"></div>
+                                <div class="member-card">
+                                    <div class="role">Wakil Ketua</div>
+                                    <div class="name">Muhammad miftah h</div>
+                                </div>
+                            </div>
+                            <div class="cabang-item">
+                                <div class="line-v" style="height: 20px;"></div>
+                                <div class="member-card">
+                                    <div class="role">Sekretaris</div>
+                                    <div class="name">Keyla</div>
+                                </div>
+                            </div>
+                            <div class="cabang-item">
+                                <div class="line-v" style="height: 20px;"></div>
+                                <div class="member-card">
+                                    <div class="role">Bendahara</div>
+                                    <div class="name">Riska tri asih</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALERI -->
+        <section id="galeri">
+            <div class="reveal">
+                <h2>Galeri Foto Kelas</h2>
+                <div class="galeri-wrapper" id="galeriScroll">
+                    <div class="galeri-grid">
+                        <div class="galeri-item">
+                            <div class="foto-box">
+                                <img src="album.jpg" alt="Kegiatan">
+                                <div class="caption">Momen Kebersamaan Hangat</div>
+                            </div>
+                        </div>
+                        <div class="galeri-item">
+                            <div class="foto-box">
+                                <img src="album.jpg" alt="Eksperimen">
+                                <div class="caption">Kolaborasi Belajar Kelompok</div>
+                            </div>
+                        </div>
+                        <div class="galeri-item">
+                            <div class="foto-box">
+                                <img src="album.jpg" alt="Classmeeting">
+                                <div class="caption">Selebrasi Kemenangan Kelas</div>
+                            </div>
+                        </div>
+                        <div class="galeri-item">
+                            <div class="foto-box">
+                                <img src="album.jpg" alt="Diskusi">
+                                <div class="caption">Presentasi Proyek Akhir</div>
+                            </div>
+                        </div>
+                        <div class="galeri-item">
+                            <div class="foto-box">
+                                <img src="album.jpg" alt="Guru">
+                                <div class="caption">Bimbingan Wali Kelas</div>
+                            </div>
+                        </div>
+                        <div class="galeri-item">
+                            <div class="foto-box">
+                                <img src="album.jpg" alt="Seminar">
+                                <div class="caption">Sesi Motivasi Belajar</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PENGHARGAAN -->
+        <section id="penghargaan">
+            <div class="reveal">
+                <h2>Penghargaan Kelas</h2>
+                <div class="stats-row">
+                    <div class="card stat-box">
+                        <h3>06</h3>
+                        <p>Akademik</p>
+                    </div>
+                    <div class="card stat-box">
+                        <h3>04</h3>
+                        <p>Non-Akademik</p>
+                    </div>
+                </div>
+
+                <div class="awards-list">
+                    <div class="card award-card" onclick="showAwardDetail(this)" 
+                         data-tanggal="12" data-bulan="Januari" data-tahun="2026" 
+                         data-pemenang="Seluruh Siswa XI Mipas F3" 
+                         data-rincian="Meraih predikat kelas terbersih dan terrapis sepanjang semester ganjil berkat kerja keras piket harian yang konsisten dan kekompakan menjaga lingkungan belajar yang nyaman.">
+                        <span class="award-title">Juara 1 Lomba Kebersihan Lingkungan Sekolah</span>
+                        <span class="award-year">2026</span>
+                    </div>
+                    <div class="card award-card" onclick="showAwardDetail(this)"
+                         data-tanggal="24" data-bulan="Mei" data-tahun="2026" 
+                         data-pemenang="Tim Teater F3 Squad" 
+                         data-rincian="Menyabet piala terfavorit pilihan juri dan penonton lewat garapan drama kolosal bernuansa futuristik yang memukau seluruh audiens di aula utama sekolah.">
+                        <span class="award-title">Juara Terfavorit Pentas Seni Tahunan</span>
+                        <span class="award-year">2026</span>
+                    </div>
+                    <div class="card award-card" onclick="showAwardDetail(this)"
+                         data-tanggal="18" data-bulan="November" data-tahun="2025" 
+                         data-pemenang="Tim Voli Putra & Putri F3" 
+                         data-rincian="Berhasil mengamankan posisi Runner-Up setelah laga sengit 3 set di babak final, menunjukkan sportivitas tinggi dan kerja sama tim yang luar biasa erat.">
+                        <span class="award-title">Juara 2 Turnamen Bola Voli Antar Kelas</span>
+                        <span class="award-year">2025</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- MODAL DETAIL PENGHARGAAN -->
+    <div class="modal-overlay" id="awardModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title" id="modalAwardTitle">Nama Penghargaan</div>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-info-item">
+                <div class="modal-info-label">Tanggal Rilis Juara</div>
+                <div class="modal-info-value" id="modalAwardDate">01 Januari 2026</div>
+            </div>
+            <div class="modal-info-item">
+                <div class="modal-info-label">Penerima / Perwakilan</div>
+                <div class="modal-info-value" id="modalAwardWinner">Nama Pemenang</div>
+            </div>
+            <div class="modal-info-item" style="margin-bottom: 0;">
+                <div class="modal-info-label">Rincian Prestasi</div>
+                <div class="modal-info-value" id="modalAwardDetail" style="text-align: justify;">Rincian lengkap juara...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HALAMAN TERSEMBUNYI (TENTANG WEB) -->
+    <div class="hidden-page" id="aboutPage">
+        <div class="container" style="max-width: 600px; padding: 0;">
+            <button class="back-btn" onclick="toggleAboutPage(false)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Kembali ke Beranda
+            </button>
+
+            <div class="card" style="margin-bottom: 25px;">
+                <h2 style="font-size: 1.4rem; margin-bottom: 25px;">Tentang Platform</h2>
+                
+                <div class="modal-info-item">
+                    <div class="modal-info-label">Nama Web</div>
+                    <div class="modal-info-value">Class web F3</div>
+                </div>
+                <div class="modal-info-item">
+                    <div class="modal-info-label">Versi Web</div>
+                    <div class="modal-info-value" style="font-weight: 700;">v2.35 (pengembangan)</div>
+                </div>
+                <div class="modal-info-item">
+                    <div class="modal-info-label">Developer</div>
+                    <div class="modal-info-value" style="color: #b7791f; font-weight: 700;">Apit Hartono (PitNewbie)</div>
+                </div>
+                <div class="modal-info-item">
+                    <div class="modal-info-label">Tanggal Rilis</div>
+                    <div class="modal-info-value">12 Juli 2026</div>
+                </div>
+                <div class="modal-info-item">
+                    <div class="modal-info-label">Tanggal Update</div>
+                    <div class="modal-info-value">14 Juli 2026</div>
+                </div>
+                <div class="modal-info-item">
+                    <div class="modal-info-label">Link Web Kelas</div>
+                    <div class="copy-box">
+                        <!-- Teks URL otomatis diisi via JavaScript mengikuti domain asli -->
+                        <span class="url-text" id="webUrl">Memuat tautan...</span>
+                        <button class="copy-btn" id="copyUrlBtn" onclick="copyToClipboard()">Salin</button>
+                    </div>
+                </div>
+                <div class="modal-info-item" style="margin-bottom: 0;">
+                    <div class="modal-info-label">Deskripsi Kelas</div>
+                    <div class="modal-info-value" style="text-align: justify; line-height: 1.6;">
+                        Portal interaktif resmi bagi keluarga besar kelas XI Mipas F3. Dikembangkan dengan prinsip estetika modern dan optimasi seluler yang responsif, web ini bertindak sebagai memori digital dinamis untuk mendokumentasikan pencapaian akademik, galeri kebersamaan harian, struktur manajemen kepengurusan kelas, serta visualisasi perkembangan ekosistem belajar yang solid, inovatif, dan berintegritas tinggi.
+                    </div>
+                </div>
+            </div>
+
+            <!-- GIMIK STORAGE BAR -->
+            <div class="storage-container">
+                <div class="storage-header">
+                    <span class="storage-title">Penyimpanan Web</span>
+                    <span class="storage-desc">Tersisa <strong>10 GB</strong> dari 15 GB</span>
+                </div>
+                <div class="storage-bar-bg">
+                    <div class="storage-bar-fill"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // --- LOGIK TIMEOUT LOADING SCREEN (5 DETIK) ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // Mengatur Link Web secara dinamis mengikuti domain asal website dibuka
+            const currentOrigin = window.location.origin;
+            document.getElementById('webUrl').innerText = currentOrigin;
+
+            setTimeout(() => {
+                const loader = document.getElementById('loadingScreen');
+                loader.classList.add('fade-out');
+                document.body.classList.remove('loading-active');
+                
+                checkScroll();
+            }, 5000);
+        });
+
+        const hamBtn = document.getElementById('hamBtn');
+        const sideNav = document.getElementById('sideNav');
+
+        // Toggle Sidebar
+        hamBtn.addEventListener('click', () => {
+            hamBtn.classList.toggle('active');
+            sideNav.classList.toggle('active');
+        });
+
+        function closeMenu() {
+            hamBtn.classList.remove('active');
+            sideNav.classList.remove('active');
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!sideNav.contains(e.target) && !hamBtn.contains(e.target)) {
+                closeMenu();
+            }
+        });
+
+        // --- ANIMASI SCROLL VETIKAL ---
+        const reveals = document.querySelectorAll('.reveal');
+        const observerOptions = { root: null, threshold: 0.1, rootMargin: "0px" };
+
+        const rowObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, observerOptions);
+
+        reveals.forEach(element => { rowObserver.observe(element); });
+
+        function checkScroll() {
+            reveals.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                if (elementTop < window.innerHeight - 50) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        // --- SCROLL HORIZONTAL GALERI ---
+        const scrollContainer = document.getElementById('galeriScroll');
+        const items = document.querySelectorAll('.galeri-item');
+
+        function updateGalleryEffect() {
+            const containerRect = scrollContainer.getBoundingClientRect();
+            const viewportCenterX = containerRect.left + (containerRect.width / 2);
+
+            items.forEach(item => {
+                const itemRect = item.getBoundingClientRect();
+                const itemCenterX = itemRect.left + (itemRect.width / 2);
+                const distanceFromCenter = Math.abs(viewportCenterX - itemCenterX);
+                const activationThreshold = itemRect.width / 2;
+
+                if (distanceFromCenter < activationThreshold) {
+                    item.classList.add('is-active');
+                } else {
+                    item.classList.remove('is-active');
+                }
+            });
+        }
+
+        scrollContainer.addEventListener('scroll', updateGalleryEffect);
+        window.addEventListener('resize', updateGalleryEffect);
+        
+        window.addEventListener('load', () => {
+            setTimeout(updateGalleryEffect, 5100); 
+        });
+
+        // --- LOGIK POP-UP DETAIL PENGHARGAAN ---
+        const awardModal = document.getElementById('awardModal');
+        
+        function showAwardDetail(element) {
+            const title = element.querySelector('.award-title').innerText;
+            const tanggal = element.getAttribute('data-tanggal');
+            const bulan = element.getAttribute('data-bulan');
+            const tahun = element.getAttribute('data-tahun');
+            const pemenang = element.getAttribute('data-pemenang');
+            const rincian = element.getAttribute('data-rincian');
+
+            document.getElementById('modalAwardTitle').innerText = title;
+            document.getElementById('modalAwardDate').innerText = `${tanggal} ${bulan} ${tahun}`;
+            document.getElementById('modalAwardWinner').innerText = pemenang;
+            document.getElementById('modalAwardDetail').innerText = rincian;
+
+            awardModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            awardModal.classList.remove('active');
+            if (!document.getElementById('aboutPage').classList.contains('active')) {
+                document.body.style.overflow = '';
+            }
+        }
+
+        awardModal.addEventListener('click', (e) => {
+            if (e.target === awardModal) {
+                closeModal();
+            }
+        });
+
+        // --- LOGIK HALAMAN TERSEMBUNYI (TENTANG WEB) ---
+        const aboutPage = document.getElementById('aboutPage');
+
+        function openSecretPage() {
+            closeMenu(); 
+            toggleAboutPage(true);
+        }
+
+        function toggleAboutPage(show) {
+            if (show) {
+                aboutPage.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } else {
+                aboutPage.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Salin Tautan Manual dinamis
+        function copyToClipboard() {
+            const urlText = document.getElementById('webUrl').innerText;
+            const copyBtn = document.getElementById('copyUrlBtn');
+            
+            navigator.clipboard.writeText(urlText).then(() => {
+                copyBtn.innerText = 'Tersalin!';
+                copyBtn.style.backgroundColor = '#2f855a';
+                
+                setTimeout(() => {
+                    copyBtn.innerText = 'Salin';
+                    copyBtn.style.backgroundColor = '#b7791f';
+                }, 2000);
+            }).catch(err => {
+                console.error('Gagal menyalin: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
