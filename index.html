@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Class XI F1 OFC</title>
+    <title>Web Class XI F3 OFC</title>
     <!-- Google Font Premium -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -1107,7 +1107,7 @@
 
         // Salin Tautan Manual dinamis
         function copyToClipboard() {
-            const urlText = document.getElementById('webUrl').innerText;
+            const urlText = window.location.href;
             const copyBtn = document.getElementById('copyUrlBtn');
             
             navigator.clipboard.writeText(urlText).then(() => {
